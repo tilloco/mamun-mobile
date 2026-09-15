@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #faf8f3;
+  color: #1c1b19;
+}
+
+/* Klaviatura bilan navigatsiya qilganda fokus ko'rinishi aniq bo'lishi uchun */
+:focus-visible {
+  outline: 2px solid #a9812f;
+  outline-offset: 2px;
+}

@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Ma'mun 2.0",
+    "slug": "mamun-2-0",
+    "scheme": "mamun2",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true, "bundleIdentifier": "uz.mamun.app" },
+    "android": {
+      "package": "uz.mamun.app",
+      "adaptiveIcon": { "backgroundColor": "#0B4F6C" }
+    },
+    "plugins": ["expo-router"],
+    "extra": {
+      "router": { "origin": false }
+    }
+  }
+}

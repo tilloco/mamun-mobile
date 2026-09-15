@@ -1,0 +1,17 @@
+import * as SecureStore from 'expo-secure-store';
+
+const TOKEN_KEY = 'huquq_access_token';
+
+// Token'ni himoyalangan qurilma xotirasida saqlaymiz (Keychain/Keystore) -
+// oddiy AsyncStorage'dan farqli o'laroq, bu qurilma darajasida shifrlangan.
+export async function saveToken(token: string): Promise<void> {
+  await SecureStore.setItemAsync(TOKEN_KEY, token);
+}
+
+export async function getToken(): Promise<string | null> {
+  return SecureStore.getItemAsync(TOKEN_KEY);
+}
+
+export async function clearToken(): Promise<void> {
+  await SecureStore.deleteItemAsync(TOKEN_KEY);
+}
