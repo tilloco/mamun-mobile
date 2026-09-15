@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
@@ -7,8 +7,24 @@ import { useAuth } from '../../src/lib/auth-context';
 import { colors, radius, spacing } from '../../src/theme/colors';
 
 export default function ProfileScreen() {
-  const router = useRouter();
+   const router = useRouter();
   const { user, signOut } = useAuth();
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const onTitleTap = () => {
+    tapCount.current += 1;
+    if (tapCount.current >= 7) {
+      tapCount.current = 0;
+      if (tapTimer.current) clearTimeout(tapTimer.current);
+      router.push('/admin');
+      return;
+    }
+    if (tapTimer.current) clearTimeout(tapTimer.current);
+    tapTimer.current = setTimeout(() => {
+      tapCount.current = 0;
+    }, 2000);
+  };
 
   const onLogout = async () => {
     await signOut();
@@ -18,7 +34,9 @@ export default function ProfileScreen() {
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>Profil</Text>
+               <Pressable onPress={onTitleTap}>
+          <Text style={styles.title}>Profil</Text>
+        </Pressable>
 
         <View style={styles.card}>
           <Row label="Ism" value={user?.name || '—'} />

@@ -12,7 +12,8 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="admin" />
           <Stack.Screen name="lesson/[id]" options={{ headerShown: true, headerBackTitle: 'Orqaga' }} />
           <Stack.Screen name="quiz/[lessonId]" options={{ headerShown: true, headerBackTitle: 'Orqaga' }} />
         </Stack>

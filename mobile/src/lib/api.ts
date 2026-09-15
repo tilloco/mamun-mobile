@@ -27,17 +27,17 @@ export class ApiError extends Error {
     this.code = body.code;
   }
 }
-
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: unknown;
   token?: string | null;
+  adminKey?: string | null;
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (options.token) headers.Authorization = `Bearer ${options.token}`;
-
+   if (options.token) headers.Authorization = `Bearer ${options.token}`;
+  if (options.adminKey) headers['x-admin-key'] = options.adminKey;
   let res: Response;
   try {
     res = await fetch(`${API_URL}${path}`, {
@@ -61,6 +61,26 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   return data as T;
+}
+
+export interface AdminLesson {
+  id: string;
+  title: string;
+  order: number;
+}
+
+export interface AdminWeek {
+  id: string;
+  title: string;
+  order: number;
+  lessons: AdminLesson[];
+}
+
+export interface AdminModuleTree {
+  id: string;
+  title: string;
+  order: number;
+  weeks: AdminWeek[];
 }
 
 export const api = {
@@ -134,6 +154,16 @@ export const api = {
 
   getExamResult: (token: string, sessionId: string) =>
     request<ExamResult>(`/exam/${sessionId}/result`, { token }),
-
   getExamHistory: (token: string) => request<ExamHistoryItem[]>('/exam/history', { token }),
+
+  // --- Admin: savol qo'shish ---
+  listModulesAdmin: (adminKey: string) => request<AdminModuleTree[]>('/content/admin/modules', { adminKey }),
+
+  createQuestionAdmin: (
+    adminKey: string,
+    dto: { lessonId: string; text: string; options: string[]; correctIndex: number; explanation: string },
+  ) => request<{ id: string }>('/content/questions', { method: 'POST', adminKey, body: dto }),
+
+  createQuestionsBulkAdmin: (adminKey: string, dto: { lessonId: string; text: string }) =>
+    request<{ message: string; count: number }>('/content/questions/bulk', { method: 'POST', adminKey, body: dto }),
 };
