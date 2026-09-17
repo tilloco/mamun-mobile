@@ -177,4 +177,10 @@ export interface ExamHistoryItem {
   percentage: number | null;
   grade: string | null;
   status: ExamSessionStatus;
+  
+}
+export interface SaveExamAnswerDto {
+  chosenIndex?: number;
+  partAText?: string;
+  partBText?: string;
 }

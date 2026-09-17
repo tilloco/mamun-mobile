@@ -1,6 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { colors, radius, spacing } from '../theme/colors';
+import { useTapSound } from '../hooks/useTapSound';
 
 interface Props {
   title: string;
@@ -12,9 +13,16 @@ interface Props {
 
 export function PrimaryButton({ title, onPress, disabled, loading, variant = 'primary' }: Props) {
   const isOutline = variant === 'outline';
+  const playTap = useTapSound();
+
+  const handlePress = () => {
+    playTap();
+    onPress();
+  };
+
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
       style={({ pressed }) => [
         styles.base,

@@ -15,11 +15,14 @@ export default function AdminHome() {
   const [moduleId, setModuleId] = useState<string | null>(null);
   const [weekId, setWeekId] = useState<string | null>(null);
 
-  const moduleOptions = tree.map((m) => ({ id: m.id, label: m.title }));
+  // PickerField.options expects {label, value}[] - not {id, label}[]
+  const moduleOptions = tree.map((m) => ({ label: m.title, value: m.id }));
   const selectedModule = tree.find((m) => m.id === moduleId) || null;
-  const weekOptions = selectedModule ? selectedModule.weeks.map((w) => ({ id: w.id, label: w.title })) : [];
+
+  const weekOptions = selectedModule ? selectedModule.weeks.map((w) => ({ label: w.title, value: w.id })) : [];
   const selectedWeek = selectedModule?.weeks.find((w) => w.id === weekId) || null;
-  const lessonOptions = selectedWeek ? selectedWeek.lessons.map((l) => ({ id: l.id, label: l.title })) : [];
+
+  const lessonOptions = selectedWeek ? selectedWeek.lessons.map((l) => ({ label: l.title, value: l.id })) : [];
   const selectedLesson = selectedWeek?.lessons.find((l) => l.id === selectedLessonId) || null;
 
   if (!adminKey) {
@@ -44,33 +47,40 @@ export default function AdminHome() {
         )}
 
         <Text style={styles.sectionTitle}>Dars tanlang</Text>
+
+        {/* PickerField.value is a plain string | null, and onChange returns a string */}
         <PickerField
           label="Fan"
-          value={selectedModule ? { id: selectedModule.id, label: selectedModule.title } : null}
+          value={moduleId}
           options={moduleOptions}
-          onChange={(opt) => {
-            setModuleId(opt.id);
+          onChange={(value) => {
+            setModuleId(value);
             setWeekId(null);
             setSelectedLessonId(null);
           }}
         />
-        <PickerField
-          label="Hafta"
-          value={selectedWeek ? { id: selectedWeek.id, label: selectedWeek.title } : null}
-          options={weekOptions}
-          onChange={(opt) => {
-            setWeekId(opt.id);
-            setSelectedLessonId(null);
-          }}
-          disabled={!selectedModule}
-        />
-        <PickerField
-          label="Dars"
-          value={selectedLesson ? { id: selectedLesson.id, label: selectedLesson.title } : null}
-          options={lessonOptions}
-          onChange={(opt) => setSelectedLessonId(opt.id)}
-          disabled={!selectedWeek}
-        />
+
+        {/* PickerField has no `disabled` prop - simulate it by blocking touches and dimming */}
+        <View pointerEvents={selectedModule ? 'auto' : 'none'} style={!selectedModule && styles.pickerDisabled}>
+          <PickerField
+            label="Hafta"
+            value={weekId}
+            options={weekOptions}
+            onChange={(value) => {
+              setWeekId(value);
+              setSelectedLessonId(null);
+            }}
+          />
+        </View>
+
+        <View pointerEvents={selectedWeek ? 'auto' : 'none'} style={!selectedWeek && styles.pickerDisabled}>
+          <PickerField
+            label="Dars"
+            value={selectedLessonId}
+            options={lessonOptions}
+            onChange={(value) => setSelectedLessonId(value)}
+          />
+        </View>
 
         {isLoading && <ActivityIndicator color={colors.primary} style={{ marginVertical: spacing.md }} />}
 
@@ -114,6 +124,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 13, fontWeight: '600', color: colors.textMuted, marginTop: spacing.lg, marginBottom: spacing.sm },
   banner: { backgroundColor: '#FBEAE8', borderRadius: radius.sm, padding: spacing.sm + 4, marginBottom: spacing.md },
   bannerText: { color: colors.danger, fontSize: 13 },
+  pickerDisabled: { opacity: 0.5 },
   actionCard: {
     flexDirection: 'row',
     alignItems: 'center',

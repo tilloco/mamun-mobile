@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { ErrorText } from '../../src/components/ErrorText';
 import { api, ApiError } from '../../src/lib/api';
+import { useAuth } from '../../src/lib/auth-context';
+import { useGoogleAuth } from '../../src/lib/google-auth';
 import { colors, spacing } from '../../src/theme/colors';
 
 function isValidEmail(value: string): boolean {
@@ -13,9 +15,31 @@ function isValidEmail(value: string): boolean {
 
 export default function PhoneScreen() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { request, response, promptAsync } = useGoogleAuth();
+
+  useEffect(() => {
+    if (response?.type === 'success' && response.params.id_token) {
+      (async () => {
+        setGoogleLoading(true);
+        setError(null);
+        try {
+          const result = await api.loginWithGoogle(response.params.id_token);
+          await signIn(result.accessToken);
+          router.replace('/(tabs)/dashboard');
+        } catch (e) {
+          setError(e instanceof ApiError ? e.message : "Google orqali kirishda xatolik yuz berdi");
+        } finally {
+          setGoogleLoading(false);
+        }
+      })();
+    }
+  }, [response]);
 
   const onSubmit = async () => {
     setError(null);
@@ -42,6 +66,15 @@ export default function PhoneScreen() {
       <Text style={styles.title}>Huquq imtihoniga tayyorgarlik</Text>
       <Text style={styles.subtitle}>Davom etish uchun email manzilingizni kiriting</Text>
 
+      <PrimaryButton
+        title="Google orqali kirish"
+        onPress={() => promptAsync()}
+        loading={googleLoading}
+        disabled={!request}
+      />
+
+      <Text style={styles.orText}>yoki</Text>
+
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
@@ -51,7 +84,6 @@ export default function PhoneScreen() {
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
-        autoFocus
       />
 
       <ErrorText message={error} />
@@ -65,6 +97,7 @@ const styles = StyleSheet.create({
   content: { justifyContent: 'center' },
   title: { fontSize: 26, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },
   subtitle: { fontSize: 15, color: colors.textMuted, marginBottom: spacing.xl },
+  orText: { textAlign: 'center', color: colors.textMuted, marginVertical: spacing.md },
   label: { fontSize: 14, color: colors.text, marginBottom: spacing.xs, fontWeight: '600' },
   input: {
     borderWidth: 1,

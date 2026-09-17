@@ -3,9 +3,13 @@ import type {
   ApiErrorBody,
   CourseModule,
   DashboardData,
+  ExamHistoryItem,
+  ExamResult,
+  ExamSessionPayload,
   FreeQuota,
   LessonDetail,
   RequestOtpResponse,
+  SaveExamAnswerDto,
   SubmitAnswerResult,
   User,
   VerifyOtpResponse,
@@ -98,4 +102,17 @@ export const api = {
   // --- AI shaxsiylashtirilgan tavsiyalar (faqat Premium) ---
   getAiRecommendation: (token: string, forceRefresh = false) =>
     request<AiRecommendation>(`/ai/recommendation${forceRefresh ? '?refresh=true' : ''}`, { token }),
+    // --- Sinov imtihoni (mock exam) ---
+  startExam: (token: string) => request<ExamSessionPayload>('/exam/start', { method: 'POST', token }),
+
+  saveExamAnswer: (token: string, sessionId: string, answerId: string, dto: SaveExamAnswerDto) =>
+    request<{ saved: boolean }>(`/exam/${sessionId}/answer/${answerId}`, { method: 'POST', token, body: dto }),
+
+  submitExam: (token: string, sessionId: string) =>
+    request<ExamResult>(`/exam/${sessionId}/submit`, { method: 'POST', token }),
+
+  getExamResult: (token: string, sessionId: string) =>
+    request<ExamResult>(`/exam/${sessionId}/result`, { token }),
+
+  getExamHistory: (token: string) => request<ExamHistoryItem[]>('/exam/history', { token }),
 };

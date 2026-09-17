@@ -1,20 +1,43 @@
 {
   "expo": {
-    "name": "Ma'mun 2.0",
+    "name": "School17",
     "slug": "mamun-2-0",
     "scheme": "mamun2",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "assetBundlePatterns": ["**/*"],
-    "ios": { "supportsTablet": true, "bundleIdentifier": "uz.mamun.app" },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "uz.mamun.app"
+    },
     "android": {
       "package": "uz.mamun.app",
-      "adaptiveIcon": { "backgroundColor": "#0B4F6C" }
+      "adaptiveIcon": {
+        "backgroundColor": "#0B4F6C"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-audio",
+      "expo-web-browser"
+    ],
     "extra": {
-      "router": { "origin": false }
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "65e80335-adf1-4713-a7df-a6adfa7a643e"
+      }
     }
   }
 }

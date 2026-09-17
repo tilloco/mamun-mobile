@@ -151,6 +151,8 @@ export const api = {
 
   submitExam: (token: string, sessionId: string) =>
     request<ExamResult>(`/exam/${sessionId}/submit`, { method: 'POST', token }),
+  loginWithGoogle: (idToken: string) =>
+  request<VerifyOtpResponse>('/auth/google', { method: 'POST', body: { idToken } }),
 
   getExamResult: (token: string, sessionId: string) =>
     request<ExamResult>(`/exam/${sessionId}/result`, { token }),
@@ -158,6 +160,8 @@ export const api = {
 
   // --- Admin: savol qo'shish ---
   listModulesAdmin: (adminKey: string) => request<AdminModuleTree[]>('/content/admin/modules', { adminKey }),
+    searchUsers: (token: string, query: string) =>
+    request<any[]>(`/users/search?q=${encodeURIComponent(query)}`, { token }),
 
   createQuestionAdmin: (
     adminKey: string,

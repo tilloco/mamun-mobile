@@ -1,15 +1,17 @@
 export const colors = {
- primary: '#0F6B4C',
-  primaryDark: '#0A4E37',
-  accent: '#2E9E6E',
-  success: '#1E8E3E',
-  danger: '#D93025',
+  primary: '#6D28D9',
+  primaryDark: '#1E1B4B',
+  accent: '#8B5CF6',
+  success: '#16A34A',
+  danger: '#DC2626',
   warning: '#E8A93C',
-  background: '#F5F7F8',
+  background: '#F7F7FB',
   surface: '#FFFFFF',
-  border: '#E1E5E8',
-  text: '#101418',
-  textMuted: '#5B6770',
+  border: '#E4E4EF',
+  text: '#1E1B4B',
+  textMuted: '#64748B',
+  hero: '#1E1B4B',
+  heroText: '#F5F3FF',
   white: '#FFFFFF',
 };
 
@@ -26,6 +28,7 @@ export const radius = {
   md: 12,
   lg: 20,
 };
+
 export const shadow = {
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
