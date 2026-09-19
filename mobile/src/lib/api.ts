@@ -85,14 +85,7 @@ export interface AdminModuleTree {
 
 export const api = {
   // --- Auth ---
-  requestOtp: (email: string) => request<RequestOtpResponse>('/auth/request-otp', { method: 'POST', body: { email } }),
-
-  verifyOtp: (email: string, code: string, name?: string, referredByCode?: string) =>
-    request<VerifyOtpResponse>('/auth/verify-otp', {
-      method: 'POST',
-      body: { email, code, name, referredByCode },
-    }),
-
+  
   // --- Profile ---
   getMe: (token: string) => request<User>('/users/me', { token }),
 
